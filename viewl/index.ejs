@@ -1,123 +1,86 @@
 <% layout('boilerplate') -%> 
-<body>
-    
-    <style>
-      #filters{
-        display: flex;
-        flex-wrap:wrap;
-        align-items: center;
-      }
-      .filter{
-        text-align: center;
-        margin-right: 2rem;
-        margin-top: 2rem;
-        opacity:0.7;
-      }
-      .filter:hover{
-        opacity: 1;
-        cursor: pointer;
-      }
-      .filter p{
-        font-size:0.7rem;
-      }
-      .tax-info{
-        display:none;
-      }
-      .tax-toggle{
-        border: 1px solid black;
-        border-radius: 1rem;
-        height:3.25rem;
-        padding: 1rem;
-        margin-left: 2rem;
-        display:flex;
-        align-items:center;
-      }
-    </style>
-    <div id="filters">
-      <div class="filter">
-        <div><a href="/listings"><i class="fa-solid fa-fire"></i></a></div>
-        <p>Trending</p>
-      </div>
-      <div class="filter">
-        <div><a href="/listings/search?query=Delhi"> <i class="fa-sharp-duotone fa-solid fa-city"></i></a></div>
-        <p>Flats</p>
-      </div>
-      <div class="filter">
-        <div><a href="/listings/search?query=Rooms"><i class="fa-solid fa-bed"></i></a></div>
-        <p>Rooms</p>
-      </div>
-      <div class="filter">
-        <div><a href="/listings/search?query=City"><i class="fa-solid fa-mountain-city"></i></a></div>
-        <p>Ionic cities</p>
-      </div>
-      <div class="filter">
-        <div><a href="/listings/search?query=Mountains"><i class="fa-solid fa-mountain"></i></a></div>
-        <p>Mountains</p>
-      </div>
-      
-      
-      <div class="filter">
-        <div><a href="/listings/search?query=Pools"><i class="fa-solid fa-person-swimming"></i></a></div>
-        <p>Amazing pools</p>
-      </div>
-      
-      <div class="filter">
-        <div><a href="/listings/search?query=Farms"><i class="fa-solid fa-cow"></i></a></div>
-        <p>Farms</p>
-      </div>
-      <div class="filter">
-        <div><a href="/listings/search?query=Camping"><i class="fa-solid fa-campground"></i></a></div>
-        <p>Camping</p>
-      </div>
-      <div class="filter">
-        <div><a href="/listings/search?query=Eastfacing"><i class="fa-solid fa-sun"></i></a></div>
-        <p>East facing
-        </p>
 
+<body class="bg-gray-50">
+
+<style>
+  .tax-info {
+    display: none;
+  }
+</style>
+
+<!-- Filters Section -->
+<div id="filters" class="flex flex-wrap justify-center items-center gap-6 px-4 py-6 bg-white shadow-sm rounded-xl mx-4 mt-6">
+  <% const filters = [
+    { query: "", icon: "fa-fire", label: "Trending", href: "/listings" },
+    { query: "Delhi", icon: "fa-city", label: "Flats" },
+    { query: "Rooms", icon: "fa-bed", label: "Rooms" },
+    { query: "City", icon: "fa-mountain-city", label: "Iconic Cities" },
+    { query: "Mountains", icon: "fa-mountain", label: "Mountains" },
+    { query: "Pools", icon: "fa-person-swimming", label: "Pools" },
+    { query: "Farms", icon: "fa-cow", label: "Farms" },
+    { query: "Camping", icon: "fa-campground", label: "Camping" },
+    { query: "Eastfacing", icon: "fa-sun", label: "East Facing" },
+  ]; %>
+
+  <% filters.forEach(filter => { %>
+    <div class="flex flex-col items-center text-gray-600 hover:text-gray-900 transition-opacity duration-300 opacity-80 hover:opacity-100 cursor-pointer">
+      <div class="text-xl">
+        <a href="<%= filter.href || ('/listings/search?query=' + filter.query) %>">
+          <i class="fa-solid <%= filter.icon %>"></i>
+        </a>
       </div>
-     
-      
-      
-      <div class="tax-toggle">
-        <div class="form-check-reverse form-switch">
-          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
-          <label class="form-check-label" for="flexSwitchCheckDefault">Display total after taxes</label>
-        </div>
-      </div>
+      <p class="text-xs mt-1"><%= filter.label %></p>
     </div>
-    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
-    <% for(let listing of allListings) { %>
-    <a href="/listings/<%= listing._id %>" class="listing-link">
-    <div class="card col listing-card" >
-        <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 20rem"/>
-        <div class="card-img-overlay">abcd</div>
-        <div class="card-body">
-          
-          <p class="card-text">
-           <b> <%= listing.title %>  </b><br>
-           &#8377 <%= listing.price.toLocaleString("en-IN") %> /night
-           <i class="tax-info"> &nbsp; &nbsp; +18% GST</i>
-          </p>
-         
-        </div>
-      </div>
-    </a>
-      <% } %>
-    </div>
-<script>
-  let taxSwitch=document.getElementById("flexSwitchCheckDefault");
-  taxSwitch.addEventListener("click",()=>{
-    let taxInfo=document.getElementsByClassName("tax-info");
-    for(info of taxInfo){
-      if(info.style.display!="inline"){
-        info.style.display="inline";
-      }
-      else{
-        info.style.display="none";
-      }
-      
+  <% }) %>
+
+  <!-- Tax Toggle -->
+  <div class="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-full shadow-sm bg-white">
+    <label for="tax-toggle" class="text-sm font-medium text-gray-700">Tax Info</label>
+    <input id="tax-toggle" type="checkbox" class="toggle-checkbox hidden" />
+    <label for="tax-toggle" class="toggle-label relative w-10 h-5 bg-gray-300 rounded-full cursor-pointer">
+      <span class="absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition"></span>
+    </label>
+  </div>
+
+  <style>
+    .toggle-checkbox:checked + .toggle-label {
+      background-color: #4F46E5;
     }
-  })
-</script>
-    
 
+    .toggle-checkbox:checked + .toggle-label span {
+      transform: translateX(1.25rem);
+    }
+  </style>
+</div>
+
+<!-- Listings Section -->
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <% for (let listing of allListings) { %>
+      <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+        <img src="<%= listing.image.url %>" alt="listing_image" class="w-full h-52 object-cover" />
+        
+        <div class="p-4 flex flex-col space-y-2 items-center text-center">
+          <h3 class="text-lg font-semibold text-gray-800"><%= listing.title %></h3>
+          
+          <div class="text-gray-700 text-sm">
+            ₹ <%= listing.price.toLocaleString("en-IN") %>
+            <span class="tax-info text-xs text-gray-500">+18% GST</span>
+          </div>
+
+          <a href="/listings/<%= listing._id %>" class="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm transition">View Listing</a>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<!-- Toggle Script -->
+<script>
+  document.getElementById("tax-toggle").addEventListener("change", function () {
+    let taxInfos = document.getElementsByClassName("tax-info");
+    for (let info of taxInfos) {
+      info.style.display = this.checked ? "inline" : "none";
+    }
+  });
+</script>

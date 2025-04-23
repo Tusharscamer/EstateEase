@@ -1,21 +1,48 @@
 <% layout('boilerplate') -%> 
-<div class="row mt-3">
-   <h1 class="col-6 offset-3">Login for Travel-World</h1>
-  <div class="col-6 offset-3">
-    <form action="/login" method="POST" class="needs-validation" novalidate>
-        <div class="mb-3">
-            <label for="username" class="form-label" >Username</label>
-            <input name="username" id="username" type="text" class="form-control" required >
-            
-            </div>
-            
-                
-                    <div class="mb-3">
-                        <label for="password" class="form-label" >Password</label>
-                         <input name="password" id="password" type="password" class="form-control" required >
-                       
-                        </div>
-                        <button class="btn btn-success mt-3 mb-3">Log-In</button>
-    </form>
-    </div>
-    </div>
+<!--box that contains whole login in Section -->
+<div class="flex justify-center items-center w-full h-full bg-[#C68EFD]">
+    <div class="bg-white w-[700px]  h-[530px] flex flex-col justify-center items-center m-20 text-black rounded-3xl shadow-lg shadow-gray-500">
+
+       <div class="mt-6 mr-4">
+         <!-- heading at login side -->
+         <span class="text-xl flex font-bold">Login at Horizon Homes</span>
+       </div>
+    
+        <!-- user image logo box -->
+        <div class="userLogo rounded-full bg-[#C68EFD] flex w-20 h-20 flex justify-center items-center mt-6 text-3xl">
+            <i class="fa-solid fa-user"></i>
+        </div>
+    
+        <!-- form to input login credential -->
+        <form action="/login" method="POST" autocomplete="off"  class="mt-14  flex flex-col "class="needs-validation" novalidate>
+    
+          <!-- input email address -->
+          <input  name="username" id="username" type="text" class=" p-2 w-72 font-bold  shadow-white shadow-sm"
+            placeholder="Username" required />
+    
+          <!-- input password -->
+          <input name="password" id="password" type="password" class="password p-2 font-bold w-72 shadow-white shadow-sm  mt-5"
+            placeholder="Password" required />
+    
+          <!-- login Button to sumbit form-->
+          <button
+            class="text-white bg-[#A4B465]   mt-5 w-72 h-10 rounded-2xl cursor-pointer text-xl hover:bg-slate-500 shadow-sm shadow-slate-400" >Log In</button>
+        </form>
+    
+       
+    
+        <!-- box for forgot password  -->
+        <div class=" mr-28 mt-4">
+          <!-- forgot password button -->
+          <button type="button" class="text-blue-500 font-bold hover:font-semibold">Forgot password</button>
+        </div>
+    
+        <!-- Box that provide path for Sign Up page -->
+        <div class=" mt-1">
+          <!-- Asking user for Sign Up -->
+          <span class="font-bold">Don't have an account ?</span>
+          <!-- Sign Up button -->
+          <a href="/signup" class="font-bold text-blue-500 underline hover:font-semibold">Sign Up</a>
+        </div>
+      </div>
+</div>

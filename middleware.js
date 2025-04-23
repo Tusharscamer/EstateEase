@@ -58,3 +58,18 @@ module.exports.isReviewAuthor =async (req,res,next)=>{
   }
   next();
 }
+
+module.exports.isAdmin = (req, res, next) => {
+    if (!req.isAuthenticated()) {
+        req.flash("error", "You must be logged in as admin!");
+        return res.redirect("/admin/login");
+    }
+    
+    // Check if the user is an admin by checking the model name
+    if (req.user.constructor.modelName !== 'Admin') {
+        req.flash("error", "You don't have permission to access this page!");
+        return res.redirect("/listings");
+    }
+    
+    next();
+};

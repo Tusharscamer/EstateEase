@@ -1,50 +1,84 @@
 <% layout('boilerplate') -%>
-<div class="row mt-3">
-  <div class="col-8 offset-2">
-
-  <h1>Edit your listing</h1>
-    <form method="POST" action ="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
-      <div class="mb-3">
-        <label for="title" class="form-label">Title</label>
-      <input name="listing[title]" value="<%= listing.title %>" type="text" class="form-control" required>
-      <div class="valid-feedback"> Title looks good!</div>
-      </div>
-      <div class="mb-3">
-        <label for="description" class="form-label">Description</label>
-      <textarea name="listing[description]" class="form-control" required> <%= listing.description %> </textarea>
-      <div class="invalid-feedback"> please enter a short description</div>
-      </div>
-      <div class="mb-3 " >
-        Original Listing Image <br />
-       <img  src="<%= originalImageUrl %>" class="mb-3 card-img-top show-img" />
-    </div>
-      <div class="mb-3">
-        <label for="image" class="form-label" >Upload New Image</label>
-      <input name="listing[image]"  type="file" class="form-control"  />
-    </div>
-    <div class="row">
-    <div class="mb-3 col-md-4">
-      <label for="price" class="form-label">Price</label>
-      <input name="listing[price]" value="<%= listing.price %>" type="number" class="form-control required">
-      <div class="invalid-feedback"> Price should be valid </div>
-      </div>
-      <div class="mb-3 col-md-8">
-        <label for="country" class="form-label">Country</label>
-      <input name="listing[country]" value="<%= listing.country %>" type="text" class="form-control required">
-      <div class="invalid-feedback"> Country name should be valid </div>
-      </div>
-    </div>
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow-2xl mt-10 border border-gray-200">
+  <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Edit Your Listing</h1>
+  
+  <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" enctype="multipart/form-data" class="space-y-6">
     
-      <div class="mb-3">
-        <label for="location" class="form-label ">Location</label>
-      <input name="listing[location]" value="<%= listing.location %>" type="text" class="form-control" required>
-      <div class="invalid-feedback"> Location should be valid </div>
-      </div>
+    <!-- Title -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1" for="title">Title</label>
+      <input name="listing[title]" value="<%= listing.title %>" type="text" id="title" class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 shadow-sm" required>
+    </div>
 
-      <button class="btn btn-dark edit-btn mt-6">Edit</button>
-      <br><br>
-    </form >
- 
+    <!-- Description -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1" for="description">Description</label>
+      <textarea name="listing[description]" id="description" rows="4" class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 shadow-sm" required><%= listing.description.trim() %></textarea>
+    </div>
+
+    <!-- Original Image -->
+    <div>
+      <p class="text-sm text-gray-600 mb-2">Original Listing Image</p>
+      <img src="<%= originalImageUrl %>" class="rounded-xl shadow-md w-full h-64 object-cover mb-3" />
+    </div>
+
+    <!-- Upload New Image -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1" for="image">Upload New Image</label>
+      <input name="listing[image]" type="file" id="image" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+    </div>
+
+    <!-- Price and Country -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="price">Price</label>
+        <input name="listing[price]" value="<%= listing.price %>" type="number" id="price" class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 shadow-sm" required>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="country">Country</label>
+        <input name="listing[country]" value="<%= listing.country %>" type="text" id="country" class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 shadow-sm" required>
+      </div>
+    </div>
+
+    <!-- Property Type -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">Select Property Type</label>
+      <select name="listing[propertyType][]" multiple required class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 shadow-sm bg-white">
+        <option disabled>-- Select Property Type --</option>
+        <% const propertyGroups = {
+          "Residential": ["apartment", "independent_house", "townhouse", "condo", "studio"],
+          "Commercial": ["office", "retail", "hotel", "warehouse"],
+          "Flats": ["1BHK", "2BHK", "PentHouse"],
+          "Iconic cities": ["residential_commercial", "office_retail", "hospitality_residential"],
+          "Special Purpose": ["educational", "healthcare", "religious", "sports"],
+          "Agricultural & Land": ["farmland", "Mountains", "vacant_land"],
+          "Features": ["Rooms", "Swimmingpool", "eastFacing"]
+        } %>
+
+        <% for (const group in propertyGroups) { %>
+          <optgroup label="<%= group %>">
+            <% propertyGroups[group].forEach(option => { %>
+              <option value="<%= option %>" <%= listing.propertyType.includes(option) ? 'selected' : '' %>><%= option.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) %></option>
+            <% }) %>
+          </optgroup>
+        <% } %>
+      </select>
+    </div>
+
+    <!-- Location -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1" for="location">Location</label>
+      <input name="listing[location]" value="<%= listing.location %>" type="text" id="location" class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 shadow-sm" required>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="pt-4">
+      <button type="submit" class="w-full bg-indigo-600 text-white py-3 px-6 rounded-xl text-lg font-semibold hover:bg-indigo-700 transition-all shadow-lg">
+        Save Changes
+      </button>
+    </div>
+  </form>
 </div>
-</div>
-<script src="/javacript/script.js"></script>
+
+<!-- JS Validation (optional) -->
+<script src="/javascripts/script.js"></script>

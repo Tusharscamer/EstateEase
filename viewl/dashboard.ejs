@@ -1,0 +1,27 @@
+<% layout('boilerplate') -%>
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">Admin Dashboard</h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Pending Listings Card -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold mb-2">Pending Listings</h2>
+            <p class="text-3xl font-bold text-yellow-500"><%= pendingCount %></p>
+            <a href="/admin/pending-listings" class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                View Pending
+            </a>
+        </div>
+        
+        <!-- Verified Listings Card -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold mb-2">Verified Listings</h2>
+            <p class="text-3xl font-bold text-green-500"><%= verifiedCount %></p>
+        </div>
+        
+        <!-- Rejected Listings Card -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold mb-2">Rejected Listings</h2>
+            <p class="text-3xl font-bold text-red-500"><%= rejectedCount %></p>
+        </div>
+    </div>
+</div> 

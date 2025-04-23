@@ -1,188 +1,210 @@
- <% layout("boilerplate.ejs") %> 
+<% layout("boilerplate.ejs") %>
+<div class="container mx-auto px-4 py-10 space-y-10">
+  <!-- Title -->
+  <div class="text-center">
+    <h1 class="text-4xl font-extrabold text-gray-800"><%= listing.title %></h1>
+  </div>
 
-    <div class ="row mt-3">
-       <div class="col-8 with offset-3">
-        <h3><%= listing.title %></h3> 
-         
-      </div>
-        <div class="card col-6 offset-3 show-card listing-card">
-          
-          <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing-image">
-          <div class="card-body">
-            <p class="card-text">Ownedby <i> <%= listing.owner.username %></i> </p>
-            <p class="card-text"> <%= listing.description %>  </p>
-            <p class="card-text"></p>  &#8377 <%= listing.price.toLocaleString("en-IN") %> </p>
-            <p class="card-text"></p>  <%= listing.location %> </p>
-            <p class="card-text"> <%= listing.country %> </p>
-            
-          </div>
+  <!-- Main Info Section -->
+  <div class="flex flex-col lg:flex-row gap-10">
+    <!-- Image -->
+    <div class="w-full lg:w-1/2 rounded-xl overflow-hidden shadow-xl">
+      <img src="<%= listing.image.url %>" alt="listing-image" class="object-cover w-full h-full" />
+    </div>
+
+    <!-- Info Card -->
+    <div class="w-full lg:w-1/2 space-y-6 p-6 bg-white rounded-xl shadow-lg border border-gray-200">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="info-box">
+          <span class="text-sm text-gray-500">Location</span>
+          <p class="text-lg font-semibold text-gray-800"><%= listing.location %></p>
         </div>
-        <br />
-        <% if(currUser && listing.owner._id.equals(currUser._id)) {%>
-        <div class="btns">
-        
-        <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark col-1 offset-3 ">Edit</a>
-        
-        <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
-        <button class="btn btn-dark offset-5"> Delete</button>
+        <div class="info-box">
+          <span class="text-sm text-gray-500">Price</span>
+          <p class="text-lg font-semibold text-green-600">₹<%= listing.price.toLocaleString("en-IN") %></p>
+        </div>
+        <div class="info-box">
+          <span class="text-sm text-gray-500">Country</span>
+          <p class="text-lg font-semibold text-gray-800"><%= listing.country %></p>
+        </div>
+        <div class="info-box">
+          <span class="text-sm text-gray-500">Type</span>
+          <p class="text-lg font-semibold text-gray-800"><%= listing.propertyType %></p>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="bg-gray-50 p-4 rounded-lg h-60 overflow-y-auto border border-gray-200">
+        <h2 class="text-md text-gray-500 mb-2">Description</h2>
+        <p class="text-gray-700 whitespace-pre-line leading-relaxed"><%= listing.description %></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review + Map Section -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Map -->
+    <div class="bg-white p-6 rounded-xl shadow-lg">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">Where you'll be</h3>
+      <div id="map" class="w-full h-80 rounded-lg border border-gray-200"></div>
+    </div>
+
+    <!-- Review Form -->
+    <div class="bg-white p-6 rounded-xl shadow-lg">
+      <% if(currUser) { %>
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Leave a Review</h3>
+        <form action="/listings/<%= listing.id %>/reviews" method="POST" novalidate class="space-y-4">
+          <div>
+            <label for="rating" class="block text-gray-600">Rating</label>
+            <input type="range" min="1" max="5" id="rating" name="review[rating]" class="w-full accent-yellow-500" />
+          </div>
+          <div>
+            <label for="comment" class="block text-gray-600">Comments</label>
+            <textarea name="review[comment]" id="comment" rows="4" class="w-full p-2 border rounded-md" required></textarea>
+            <div class="text-sm text-red-500 mt-1">Please add some comments for review</div>
+          </div>
+          <button class="w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-900 transition">Submit</button>
         </form>
+      <% } else { %>
+        <div class="flex items-center justify-center h-full">
+          <p class="text-lg text-gray-600">Login to leave a review</p>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- All Reviews -->
+  <% if(listing.reviews.length > 0) { %>
+    <div class="space-y-6">
+      <h2 class="text-2xl font-semibold text-gray-800">All Reviews</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <% for (review of listing.reviews) { %>
+          <div class="p-4 bg-white shadow rounded-lg border">
+            <h4 class="text-md font-bold text-gray-800">@<%= review.author.username %></h4>
+            <p class="mt-2 text-gray-600"><%= review.comment %></p>
+            <p class="mt-1 text-yellow-600 font-semibold"><%= review.rating %> ⭐</p>
+            <form method="POST" action="/listings/<%=listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+              <button class="mt-3 text-sm bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete</button>
+            </form>
+          </div>
         <% } %>
       </div>
     </div>
-    
-     <div class="col-8 offset-3 mb-3">
-     <div class="row mt-3 mb-3">
-      <% if(currUser) { %>
-        <hr/>
-       <% if( !listing.owner._id.equals(currUser._id)) { %>
-          <button class="btn btn-dark col-4  " id="fav-<%= listing._id %>"
-            onclick="toggleFavorite('<%= currUser._id %>', '<%= listing._id %>')">
-            <% if (favoriteListings.includes(  listing._id.toString())) { %>
-                Added to Favorite 
-            <% } 
-            else { %>
-                Add to Favorite
-            <% } %>
-        </button>
-         <% } %>
-         
-        
+  <% } %>
 
-        
-        
-          <% if (currUser&&!listing.owner._id.equals(currUser._id)) { %>
-            <% if (!listing.tokenPaid) { %>
-              <button class="btn btn-dark col-4 offset-4" id="pay-btn">Pay Token Money</button>
-            <% } else { %>
-              <button class="btn btn-dark col-4 offset-4" disabled>Already Paid</button>
-            <% } %>
-          <% } %>
-        
-        
+  <!-- Favorite & Payment Buttons -->
+  <% if(currUser && !listing.owner._id.equals(currUser._id)) { %>
+    <div class="flex flex-wrap justify-center gap-6 mt-8">
+      <button id="fav-<%= listing._id %>"
+        onclick="toggleFavorite('<%= currUser._id %>', '<%= listing._id %>')"
+        class="btn btn-dark bg-gray-800 text-white px-6 py-2 rounded hover:bg-gray-900 transition">
+        <% if (favoriteListings.includes(listing._id.toString())) { %>
+          Added to Favorite ✅
+        <% } else { %>
+          Add to Favorite
+        <% } %>
+      </button>
+
+      <% if (!listing.tokenPaid) { %>
+        <button class="btn btn-dark bg-green-700 text-white px-6 py-2 rounded hover:bg-green-800 transition" id="pay-btn">Pay Token Money</button>
+      <% } else { %>
+        <button class="btn bg-gray-400 text-white px-6 py-2 rounded cursor-not-allowed" disabled>Already Paid</button>
+      <% } %>
+    </div>
+  <% } %>
+
+  <!-- Edit & Delete Buttons for Owner -->
+  <% if(currUser && listing.owner._id.equals(currUser._id)) { %>
+    <div class="flex justify-center gap-6 mt-10">
+      <a href="/listings/<%= listing._id %>/edit"
+        class="bg-blue-700 text-white px-6 py-2 rounded hover:bg-blue-800 transition">Edit</a>
+      <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
+        <button class="bg-red-700 text-white px-6 py-2 rounded hover:bg-red-800 transition">Delete</button>
+      </form>
+    </div>
+  <% } %>
 </div>
 
+<!-- Styling for Info Boxes -->
+<style>
+  .info-box {
+    @apply bg-gray-100 p-4 rounded-lg border border-gray-200 shadow-sm;
+  }
+</style>
 
+  <% if(true) { %>
+    <script>
+      var map = L.map('map').setView([28.6139, 77.2090], 10);
 
-
-
-
-
-      <h4>Leave a Review</h4>
-      <form action="/listings/<%= listing.id %>/reviews" method="POST" novalidate class="needs-validation">
-        <div class="mb-3 mt-3">
-          <label for="rating" class="form-label"> Rating</label>
-          <input type="range" min="1" max="5" id="rating"   class="form-range" name="review[rating]" />
-        </div>
-        
-        <div class="mb-3 mt-3">
-          <label for="Comment" class="form-label">Comments</label>
-          <textarea name="review[comment]" id="comment" class="form-control" cols="30" rows="5" required></textarea>
-           <div class="invalid-feedback">Please add some comments for review</div>
-        </div>
-        <button class="btn btn-outline-dark">Submit</button>
-      </form>
-      
-<hr/>
-      <% } %>
-
-      
-      <% if(listing.reviews.length>0) { %>
-      <div class="row">
-        <p><b>All reviews</b></p>
-      <% for( review of listing.reviews) { %>
-        <div class="card col-5 ms-3 mb-3">
-          <div class="card-body">
-            <h5 class="card-title"> @<%= review.author.username %> </h5>
-            <p class="card-text"><%= review.comment %></p>
-       <p class="card-text"> <%= review.rating %> stars</p>
-       
-       <form class="mb-3" method="POST" action="/listings/<%=listing._id %>/reviews/<%= review._id %>?_method=DELETE">
-          <button class="btn btn-sm btn-dark">Delete</button>
-       </form>
-     </div>
-       </div>
-      <% } %>
-      </div>
-      <% } %>
-     </div>   
-     <div class="col-6 offset-3 mb-3">
-      <h3>Where you'll be</h3>
-      <div id="map"></div>
-     </div>
-    
-     <% if(true) { %>
-     <script>
-      var map = L.map('map').setView([28.6139, 77.2090], 10); 
-  
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; OpenStreetMap contributors'
+        attribution: '&copy; OpenStreetMap contributors'
       }).addTo(map);
-  
-      var marker; 
-   
-         
-          var url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent("<%= listing.location %>" )}`;
-  
-          fetch(url).then(response => response.json())
+
+      var marker;
+
+
+      var url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent("<%= listing.location %>")}`;
+
+      fetch(url).then(response => response.json())
+        .then(data => {
+          if (data.length > 0) {
+            var lat = data[0].lat;
+            var lon = data[0].lon;
+            var location = [lat, lon];
+
+            if (marker) map.removeLayer(marker);
+
+
+            marker = L.marker(location).addTo(map).bindPopup(`Location: ${data[0].display_name} <br/> <b>Exact Location will be provided after booking <b>`)
+              .openPopup();
+
+            map.setView(location, 15);
+          } else {
+            alert("Location not found!");
+          }
+        })
+        .catch(error => console.error("Error fetching geocode data:", error));
+      function toggleFavorite(userId, listingId) {
+        if (!userId || !listingId) {
+          console.error("Missing userId or listingId!", userId, listingId);
+          return;
+        }
+
+        const button = document.getElementById(`fav-${listingId}`);
+        if (!button) {
+          console.error("Button not found for listing:", listingId);
+          return;
+        }
+
+        console.log("Sending to backend:", { userId, listingId });
+
+        fetch(`/listings/favourite/${listingId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, listingId })
+        })
+          .then(response => response.json())
           .then(data => {
-              if (data.length > 0) {
-                  var lat = data[0].lat;
-                  var lon = data[0].lon;
-                  var location = [lat, lon];
-  
-                  if (marker) map.removeLayer(marker);
-  
-                  
-                  marker = L.marker(location).addTo(map).bindPopup(`Location: ${data[0].display_name} <br/> <b>Exact Location will be provided after booking <b>`)
-                      .openPopup();
+            console.log("Server response:", data);
 
-                  map.setView(location, 15);
-              } else {
-                  alert("Location not found!");
-              }
-          })
-          .catch(error => console.error("Error fetching geocode data:", error));
-          function toggleFavorite(userId, listingId) {
-    if (!userId || !listingId) {
-        console.error("Missing userId or listingId!", userId, listingId);
-        return;
-    }
-
-    const button = document.getElementById(`fav-${listingId}`);
-    if (!button) {
-        console.error("Button not found for listing:", listingId);
-        return;
-    }
-
-    console.log("Sending to backend:", { userId, listingId });
-
-    fetch(`/listings/favourite/${listingId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, listingId })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log("Server response:", data);
-
-        if (data.success) {
-            // Toggle button text and styling
-            if (data.isFavorite) {
+            if (data.success) {
+              // Toggle button text and styling
+              if (data.isFavorite) {
                 button.innerHTML = "Added to Favorite ✅";
                 button.classList.add('btn-success');
                 button.classList.remove('btn-dark');
-            } else {
+              } else {
                 console.log()
                 button.innerHTML = "Add to Favorite";
                 button.classList.add('btn-dark');
                 button.classList.remove('btn-success');
+              }
+            } else {
+              alert("Failed to update favorite status!");
             }
-        } else {
-            alert("Failed to update favorite status!");
-        }
-    })
-    .catch(error => console.error('Error:', error));
-}   
+          })
+          .catch(error => console.error('Error:', error));
+      }
 
 
 
@@ -190,80 +212,77 @@
 
 
 
-document.addEventListener("DOMContentLoaded", function () {
-      const payBtn = document.getElementById("pay-btn");
+      document.addEventListener("DOMContentLoaded", function () {
+        const payBtn = document.getElementById("pay-btn");
 
-      if (payBtn) {
+        if (payBtn) {
           payBtn.addEventListener("click", async function () {
-              // Check if user is logged in
-              const currUser = "<%= JSON.stringify(currUser) %>"; 
-              if (!currUser) {
-                  alert("You must be logged in to make a payment!");
-                  return;
+            // Check if user is logged in
+            const currUser = "<%= JSON.stringify(currUser) %>";
+            if (!currUser) {
+              alert("You must be logged in to make a payment!");
+              return;
+            }
+
+            try {
+              const listingId = "<%= listing._id %>";
+              const userId = currUser._id;
+
+              // Step 1: Create payment order on backend
+              const response = await fetch(`/listings/payment/${listingId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ listingId })
+              });
+
+              const data = await response.json();
+
+              if (!data.success) {
+                alert("Failed to create order: " + data.error);
+                return;
               }
 
-              try {
-                  const listingId = "<%= listing._id %>";
-                  const userId = currUser._id;
-
-                  // Step 1: Create payment order on backend
-                  const response = await fetch(`/listings/payment/${listingId}`, {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ listingId })
+              // Step 2: Open Razorpay popup
+              const options = {
+                key: "<%= process.env.RAZORPAY_KEY_ID %>",
+                amount: data.amount,
+                currency: "INR",
+                name: "Real Estate Token",
+                description: "Token Money Payment",
+                order_id: data.orderId,
+                handler: async function (response) {
+                  // Step 3: Verify payment on backend
+                  const verifyResponse = await fetch("/listings/pay/verify", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      razorpay_payment_id: response.razorpay_payment_id,
+                      razorpay_order_id: response.razorpay_order_id,
+                      razorpay_signature: response.razorpay_signature,
+                      listingId,
+                      userId
+                    })
                   });
 
-                  const data = await response.json();
-
-                  if (!data.success) {
-                      alert("Failed to create order: " + data.error);
-                      return;
+                  const verifyData = await verifyResponse.json();
+                  if (verifyData.success) {
+                    alert("Payment Successful!");
+                    window.location.reload(); // Refresh page to update UI
+                  } else {
+                    alert("Payment verification failed!");
                   }
+                }
+              };
 
-                  // Step 2: Open Razorpay popup
-                  const options = {
-                      key: "<%= process.env.RAZORPAY_KEY_ID %>",
-                      amount: data.amount,
-                      currency: "INR",
-                      name: "Real Estate Token",
-                      description: "Token Money Payment",
-                      order_id: data.orderId,
-                      handler: async function (response) {
-                          // Step 3: Verify payment on backend
-                          const verifyResponse = await fetch("/listings/pay/verify", {
-                              method: "POST",
-                              headers: { "Content-Type": "application/json" },
-                              body: JSON.stringify({
-                                  razorpay_payment_id: response.razorpay_payment_id,
-                                  razorpay_order_id: response.razorpay_order_id,
-                                  razorpay_signature: response.razorpay_signature,
-                                  listingId,
-                                  userId
-                              })
-                          });
-
-                          const verifyData = await verifyResponse.json();
-                          if (verifyData.success) {
-                              alert("Payment Successful!");
-                              window.location.reload(); // Refresh page to update UI
-                          } else {
-                              alert("Payment verification failed!");
-                          }
-                      }
-                  };
-
-                  const rzp = new Razorpay(options);
-                  rzp.open();
-              } catch (error) {
-                  console.error("Payment error:", error);
-                  alert("Something went wrong. Please try again.");
-              }
+              const rzp = new Razorpay(options);
+              rzp.open();
+            } catch (error) {
+              console.error("Payment error:", error);
+              alert("Something went wrong. Please try again.");
+            }
           });
-      }
-  })
+        }
+      })
 
-        </script>
-          <% } %>
-  
-  </div>
-  
+    </script>
+    <% } %>

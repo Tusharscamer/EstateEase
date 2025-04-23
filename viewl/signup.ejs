@@ -1,25 +1,72 @@
-<%- layout('boilerplate') -%> 
-<div class="row mt-3">
-   <h1 class="col-6 offset-3">SignUp for Travel-World</h1>
-  <div class="col-6 offset-3">
-    <form action="/signup" method="POST" class="needs-validation" novalidate>
-        <div class="mb-3">
-            <label for="username" class="form-label" >Username</label>
-            <input name="username" id="username" type="text" class="form-control" required >
-            <div class="valid-feedback"> Looks good!</div>
-            </div>
-            
-                <div class="mb-3">
-                    <label for="email" class="form-label" >Email</label>
-                    <input name="email" id="email" type="email" class="form-control" required >
-                   
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label" >Password</label>
-                         <input name="password" id="password" type="password" class="form-control" required >
+<% layout('boilerplate') -%> 
+
+   <!-- Container of the Page -->
+   <div class=" bg-[#C68EFD] h-screen w-full  ">
+       
+       <!-- Container for Welcome User -->
+       <div class="mx-96 p-2 ">
+
+           <!-- welcome box -->
+           <div>
+               <!-- text -->
+               <span class="text-white text-lg">Welcome to</span>
+           </div>
+
+           <!-- Container for company Name -->
+           <div>
+               <!-- text -->
+               <span class="text-[#FFFFFF] text-3xl">Horizon</span>
+               <!-- text -->
+               <span class="text-[#626F47] text-3xl">Homes</span>
+           </div>
+       </div>
+
+       <!--Container For Sign Up-->
+       <div class="bg-white text-3xl flex  h-[480px] w-[700px] mx-96 mt-4 rounded-3xl shadow-lg shadow-gray-500">
+
+           <!-- Container Section 1 Enter Deatails For Sign Up -->
+           <div class="flex flex-col w-1/2 h-full mx-10 mt-5">
+               <!-- text -->
+               <span class="text-xl from-neutral-800 font-bold mt-4">Sign Up for Horizon Home</span>
+
+               <!-- Sign Up Form -->
+               <form action="/signup" method="POST" autocomplete="off" class="flex flex-col mt-12 space-y-8 needs-validation" novalidate>
+
+                   <!-- Box for User Name -->
+                   <div>
+                       <!-- Input First name -->
+                       <input type="text" name="username" id="username" placeholder="User Name"
+                           class="w-80 h-8 shadow-gray-500 shadow-md text-base p-2" required>
+                   </div>
+
+                   <!-- Input Email -->
+                   <input type="email" name="email" id="email"  placeholder="Email" class="w-80 h-8 p-2 shadow-gray-500 shadow-md text-base"
+                       required>
+
+                   <!-- Input Password -->
+                   <input type="password" id="password" name="password" placeholder="Password"
+                       class="w-60 h-8 p-2 shadow-gray-500 shadow-md text-base" required>
+
+                   <!-- Box of terms and Condition of organitation -->
+                   <div class="flex space-x-4">
                        
-                        </div>
-                        <button class="btn btn-success mt-3 mb-3">SignUp</button>
-    </form>
-    </div>
-    </div>
+                       <!-- Chekbox  -->
+                       <input type="checkbox" class="w-4  cursor-pointer">
+
+                       <!-- Box of Text for terms and condtions -->
+                       <div class="text-base">
+                           <!-- Text -->
+                           <span>I agree Web Mart's Terms and</span>
+                       </div>
+                   </div>
+
+                   <!-- For submit of Form -->
+                   <button 
+                       class="bg-[#A4B465] p-2 text-[#FFFFFF] w-40  mt-5 cursor-pointer rounded-3xl text-xl hover:bg-slate-500">Sign UP</button>
+               </form>
+           </div>
+
+        </div>
+     </div>
+   </div>
+

@@ -43,8 +43,16 @@ const listingSchema=new Schema({
         type: Schema.Types.ObjectId,
         ref: "User",  
         default: null,
+    },
+    verificationStatus: {
+        type: String,
+        enum: ['pending', 'verified', 'rejected'],
+        default: 'pending'
+    },
+    verificationNotes: {
+        type: String,
+        default: ''
     }
-    
 });
 listingSchema.post("findOneAndDelete",async (listing)=>{
     if(listing){

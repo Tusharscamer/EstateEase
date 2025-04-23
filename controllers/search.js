@@ -1,6 +1,6 @@
-const Listing =require("../models/listing.js");
+const Listing = require("../models/listing.js");
 
-module.exports.searchListing=async (req,res)=>{
+module.exports.searchListing = async (req, res) => {
     const { query } = req.query;
     let filters = {};
 
@@ -10,8 +10,12 @@ module.exports.searchListing=async (req,res)=>{
             { location: { $regex: query, $options: "i" } }
         ];
     }
-    const allListings = await Listing.find(filters);
-    // console.log(listings);
-    res.render("search.ejs",{allListings});
-    
-} 
+
+    try {
+        const allListings = await Listing.find(filters);
+        res.render("search.ejs", { allListings });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error");
+    }
+};

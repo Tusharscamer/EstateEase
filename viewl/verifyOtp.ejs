@@ -1,0 +1,8 @@
+<% layout('boilerplate') -%> 
+<div class="w-full h-full flex p-10 justify-center item-center">
+    <form action="/verify-otp" method="POST" class="space-x-1">
+        <label class="font-semibold" for="otp">Enter OTP sent to your email</label>
+        <input type="text" name="otp" required class="p-1 border-2  border-gray-400" />
+        <button class="p-2  bg-red-400 hover:bg-red-600 text-white rounded-md" type="submit">Verify</button> 
+    </form>
+</div>

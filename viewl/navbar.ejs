@@ -1,58 +1,110 @@
-<style>
-  .search-btn{
-    background-color:#fe424d;
-    color:#fff;
-    border-radius: 25px;
-    padding:0 1rem 0  1rem;
-  }
-  .search-btn:hover{
-    background-color:#fe424d;
-    color:#fff;
-  }
-  .search-btn i{
-    display: inline;
-    margin-right: 0.5rem;
-  }
-  .search-inp{
-    border-radius:25px;
-    padding:0.5rem 3rem 0.5rem 3rem;
-    font-size:1rem;
-  }
-  </style>
 
-
-<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/listings"><i class="fa-regular fa-compass"></i></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+<nav class="bg-white shadow-md border-b sticky top-0 z-50">
+  <div class="container mx-auto flex items-center justify-between py-3 px-4">
+    <!-- Logo -->
+     <div class="">
+  
+       <div>
+         <!-- Mobile Menu Button -->
+      <button class="md:hidden text-gray-700 focus:outline-none">
+        <i class="fa-solid fa-bars text-2xl"></i>
       </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-        
-          <a class="nav-link" href="/listings">Explore</a>
-         
-         
-        </div>
-        <div class="navbar-nav ms-auto">
-          <form class="d-flex" role="search" action="/listings/search">
-            <input class="form-control me-2 search-inp" type="search" name="query" placeholder="Search destination" aria-label="Search">
-            <button class="btn search-btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
-          </form>
-        </div>
-        <div class="navbar-nav ms-auto">
-          <a class="nav-link" href="/listings/new">List Your Desire</a>
-         <% if(!currUser){ %>
-         
-          <a class="nav-link "  href="/signup"><b>SignUp</b></a>
-          <a class="nav-link "  href="/login"><b>Log in</b></a> <% } %>
-          <%  if(currUser)  { %>
-            <a class="nav-link "  href="/listings/favourite/<%= currUser._id %>"><b>Favourite-listings</b></a>
-            <a class="nav-link "  href="/listings/paid/<%= currUser._id %>"><b>Token Paid</b></a>
-          <a class="nav-link "  href="/logout"><b>Log out</b></a>
+       </div>
+     </div>
+
+    <!-- Navigation Links -->
+    <div class="hidden md:flex flex-grow mx-4 items-center justify-between">
+      
+      <div class="space-x-6">
+        <a href="/listings" class="text-[#606c38] font-serif text-2xl font-semibold hover:text-gray-900">EtateEase</a>
+      </div>
+
+      <!-- Search Bar -->
+      <form class="flex items-center" role="search" action="/listings/search" method="get">
+        <input 
+          type="search" 
+          name="query"
+          placeholder="Search destination" 
+          class="border border-gray-300 px-6 py-2 rounded-full text-gray-700 focus:ring-2 focus:ring-red-500 focus:outline-none">
+        <button type="submit" class="bg-red-500 text-white rounded-full px-4 py-2 flex items-center ml-2 hover:bg-red-600">
+          <i class="fa-solid fa-magnifying-glass mr-2"></i> Search
+        </button>
+      </form>
+      
+    
+      <!-- User Navigation -->
+      <div class="flex items-center space-x-4">
+         <!-- user dropdown menu -->
+         <% if (currUser && currUser.role === 'user') { %>
+         <div class="UserOptions absolute z-[9999] p-2 inset-0 translate-x-[1320px] translate-y-14 transform bg-slate-100 shadow-2xl p-1 w-44 h-96 text-black shadow-md hidden">
+          <ul class="space-y-2">
+              <li class="mt-4">
+                <div class="cursor-pointer hover:bg-slate-300 w-full p-2">
+                  <a class="nav-link" href="/listings/my-listings"><b>My Listings</b></a>
+                </div>
+              </li>
+              <li>
+                <div class="YourTransactions cursor-pointer hover:bg-slate-300 w-full p-2">
+                  <a class="nav-link" href="/listings/paid"><b>Your Transactions</b></a>
+                </div>
+              </li>
+              <li>
+                <div class="YourTransactions cursor-pointer hover:bg-slate-300 w-full p-2">
+                  <a class="nav-link" href="/listings/buyers"><b>Transactions on your listing</b></a>
+                </div>
+              </li>
+             
+              <li>
+                  <div class="cursor-pointer hover:bg-slate-300 w-full p-2">
+                    <a class="nav-link" href="/listings/favourite/<%= currUser._id %>"><b>Favourite-listings</b></a>
+                  </div>
+              </li>
+              <li>
+                  <div class="cursor-pointer hover:bg-slate-300 w-full p-2">
+                      <a href="/listings/new"><b>List your property</b></a>
+                  </div>
+              </li>
+              <li>
+                  <div class="logout hover:bg-slate-300 w-full p-2">
+                    <form id="logout-form" action="/logout" method="get">
+                      <button class="btn btn-danger w-full" type="submit">Log Out</button>
+                    </form>
+                  </div>
+              </li>
+          </ul>
+         </div>
          <% } %>
-         
-        </div>
+         <% if (currUser && currUser.role === 'admin') { %>
+          <div class="UserOptions absolute z-[9999] p-2 inset-0 translate-x-[1320px] translate-y-14 transform bg-slate-100 shadow-2xl p-1 w-44 h-32 text-black shadow-md hidden" >
+           <ul class="space-y-2">
+               <li>
+                 <div class="YourTransactions cursor-pointer hover:bg-slate-300 w-full p-2">
+                   <a class="nav-link "  href="/admin/dashboard"><b>Control Panel</b></a>
+                 </div>
+               </li>
+               <li>
+                   <div class="logout hover:bg-slate-300 w-full p-2">
+                     <form id="logout-form" action="/logout" method="get">
+                       <button class="btn btn-danger w-full" type="submit">Log Out</button>
+                     </form>
+                   </div>
+               </li>
+           </ul>
+          </div>
+          <% } %>
+
+        <% if (currUser) { %>
+          <div class="userbt hover:cursor-pointer bg-gray-900 text-white w-10 h-10 flex items-center justify-center rounded-full text-lg font-semibold">
+            <%= currUser.username[0].toUpperCase() %>
+          </div>
+        <% } %>
+
+        <% if (!currUser) { %>
+          <a href="/signup" class="text-gray-700 font-semibold hover:text-gray-900">Sign Up</a>
+          <a href="/login-choice" class="text-gray-700 font-semibold hover:text-gray-900">Log In</a>
+        <% } %>
+
       </div>
     </div>
-  </nav>
+  </div>
+</nav>
